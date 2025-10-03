@@ -1,0 +1,46 @@
+{
+  "name": "brain-stroke-prediction",
+  "version": "1.0.0",
+  "description": "AI-powered Brain Stroke Risk Prediction System - Full Stack Application",
+  "main": "backend/app.py",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && python app.py",
+    "dev": "concurrently \"cd backend && python app.py\" \"cd frontend && npm start\"",
+    "install-frontend": "cd frontend && npm install",
+    "install-backend": "cd backend && pip install -r requirements.txt",
+    "test": "cd backend && python -m pytest && cd ../frontend && npm test"
+  },
+  "keywords": [
+    "machine-learning",
+    "healthcare",
+    "stroke-prediction",
+    "react",
+    "flask",
+    "artificial-intelligence",
+    "medical-ai"
+  ],
+  "author": "College ML Project",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jellies641/brain-stroke-prediction.git"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0",
+    "python": ">=3.8.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "railway": {
+    "build": {
+      "command": "npm run build"
+    },
+    "deploy": {
+      "command": "npm run start"
+    }
+  },
+  "private": true
+}

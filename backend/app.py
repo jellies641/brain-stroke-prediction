@@ -12,6 +12,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 import traceback
 import bcrypt
+from flask import send_from_directory
 
 # Import our modules
 from config import get_config
@@ -111,7 +112,7 @@ def register_error_handlers(app):
 def register_routes(app):
     """Register all application routes"""
 
-    @app.route('/', methods=['GET'])
+    @app.route('/api/health', methods=['GET'])
     def health_check():
         """Health check endpoint"""
         return jsonify({
@@ -523,6 +524,57 @@ def register_routes(app):
 
 # Create app instance
 app = create_app()
+
+if __name__ == '__main__':
+    print("🧠 Starting Brain Stroke Risk Prediction API with PostgreSQL...")
+    print("=" * 60)
+    print("API Endpoints:")
+    print("  GET    /                 - Health check")
+    print("  GET    /api/info         - API information")
+    print("  POST   /api/auth/signup  - User registration")
+    print("  POST   /api/auth/login   - User login")
+    print("  GET    /api/auth/validate - Token validation")
+    print("  POST   /api/predict      - Stroke risk prediction")
+    print("  GET    /api/history      - Get prediction history")
+    print("  GET    /api/statistics   - Get user statistics")
+    print("  DELETE /api/predictions/<id> - Delete specific prediction")
+    print("=" * 60)
+    print(f"Database: {'✅ PostgreSQL' if 'postgresql' in app.config['SQLALCHEMY_DATABASE_URI'] else '⚠️ SQLite'}")
+    print(f"ML Service: {'✅ Available' if ML_SERVICE_AVAILABLE else '❌ Not Available'}")
+    print(f"Environment: {os.environ.get('FLASK_ENV', 'development')}")
+    print("=" * 60)
+
+def register_frontend_routes(app):
+    """Register routes to serve React frontend"""
+
+    # Path to the React build folder
+    frontend_build_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'build')
+
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_react_app(path):
+        """Serve React app for all non-API routes"""
+        # If it's an API route, let Flask handle it normally
+        if path.startswith('api/'):
+            return jsonify({'error': 'API endpoint not found'}), 404
+
+        # Try to serve static files first
+        if path and os.path.exists(os.path.join(frontend_build_path, path)):
+            return send_from_directory(frontend_build_path, path)
+
+        # For all other routes, serve the React app's index.html
+        if os.path.exists(os.path.join(frontend_build_path, 'index.html')):
+            return send_from_directory(frontend_build_path, 'index.html')
+        else:
+            # Fallback if build folder doesn't exist
+            return jsonify({
+                'message': 'React app not built yet',
+                'instructions': 'Run "cd frontend && npm run build" to build the React app'
+            }), 200
+
+# Create app instance and register frontend routes
+app = create_app()
+register_frontend_routes(app)
 
 if __name__ == '__main__':
     print("🧠 Starting Brain Stroke Risk Prediction API with PostgreSQL...")
