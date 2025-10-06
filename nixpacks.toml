@@ -8,17 +8,25 @@ FLASK_ENV = "production"
 FORCE_SQLITE = "true"
 
 [phases.setup]
-nixPkgs = ["python310", "pip", "nodejs_18", "npm"]
+nixPkgs = ["python310", "pip", "nodejs", "npm"]
+
+[phases.install]
+cmds = [
+    "pip install -r requirements.txt"
+]
 
 [phases.build]
 cmds = [
-    "pip install -r requirements.txt",
-    "cd frontend && npm ci --production",
-    "cd frontend && npm run build",
+    "echo '📦 Building React frontend...'",
+    "cd frontend",
+    "npm install",
+    "npm run build",
+    "cd ..",
+    "echo '📁 Setting up Flask static files...'",
     "mkdir -p backend/static",
     "cp -r frontend/build/* backend/static/",
-    "rm -rf frontend/node_modules",
-    "rm -rf frontend/build"
+    "echo '✅ Frontend built and copied to backend/static'",
+    "ls -la backend/static/"
 ]
 
 [start]
