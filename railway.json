@@ -5,7 +5,7 @@
   },
   "deploy": {
     "startCommand": "python start.py",
-    "healthcheckPath": "/api/health",
+    "healthcheckPath": "/",
     "healthcheckTimeout": 100,
     "restartPolicyType": "on_failure",
     "restartPolicyMaxRetries": 3
@@ -16,9 +16,7 @@
         "FLASK_ENV": "production",
         "PYTHONPATH": "/app/backend:/app/ml-model",
         "FORCE_SQLITE": "true",
-        "SECRET_KEY": "railway-production-secret-key-change-me",
-        "NODE_ENV": "production",
-        "GENERATE_SOURCEMAP": "false"
+        "SECRET_KEY": "railway-production-secret-key-change-me"
       }
     }
   }

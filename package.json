@@ -1,23 +1,16 @@
 {
-  "name": "brain-stroke-prediction-fullstack",
+  "name": "brain-stroke-prediction-backend",
   "version": "1.0.0",
-  "description": "Brain Stroke Risk Prediction - Full-Stack Application with React Frontend and Flask Backend",
+  "description": "Brain Stroke Risk Prediction - Backend API with Flask and Machine Learning",
   "private": true,
   "engines": {
-    "node": "18.x",
-    "npm": "9.x",
     "python": "3.10.x"
   },
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && cd .. && mkdir -p backend/static && cp -r frontend/build/* backend/static/",
     "start": "python start.py",
     "dev": "cd backend && python app.py",
-    "install-frontend": "cd frontend && npm install",
-    "build-frontend": "cd frontend && npm run build",
-    "setup-static": "mkdir -p backend/static && cp -r frontend/build/* backend/static/",
-    "clean": "rm -rf frontend/node_modules frontend/build backend/static",
-    "heroku-postbuild": "npm run build",
-    "railway-build": "npm run build"
+    "test": "cd backend && python -m pytest",
+    "clean": "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true"
   },
   "repository": {
     "type": "git",
@@ -28,15 +21,10 @@
     "prediction",
     "machine-learning",
     "healthcare",
-    "react",
+    "api",
     "flask",
-    "full-stack"
+    "backend"
   ],
   "author": "Brain Stroke Prediction Team",
-  "license": "MIT",
-  "devDependencies": {},
-  "dependencies": {},
-  "workspaces": [
-    "frontend"
-  ]
+  "license": "MIT"
 }

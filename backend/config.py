@@ -29,8 +29,8 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
-    # CORS Configuration
-    CORS_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
+    # CORS Configuration - Allow all origins for API backend
+    CORS_ORIGINS = '*'
 
     # ML Model Configuration
     MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'ml-model', 'models')

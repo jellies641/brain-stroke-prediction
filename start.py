@@ -31,12 +31,7 @@ def check_environment():
         logger.error("❌ backend/app.py not found")
         sys.exit(1)
 
-    # Check if static files exist (frontend build)
-    static_dir = Path('backend/static')
-    if not static_dir.exists() or not list(static_dir.glob('*.html')):
-        logger.warning("⚠️ Frontend static files not found - app will run in API-only mode")
-    else:
-        logger.info("✅ Frontend static files found")
+    logger.info("✅ API-only backend mode")
 
     logger.info("✅ Environment check passed")
 
@@ -74,11 +69,16 @@ def start_flask_app():
         logger.info("📁 Changed to backend directory")
 
         # Start the Flask app
-        logger.info("🧠 Starting Brain Stroke Risk Prediction App...")
+        logger.info("🧠 Starting Brain Stroke Risk Prediction API...")
         logger.info("=" * 60)
-        logger.info(f"🌐 App will be available on port {os.environ.get('PORT', '5000')}")
-        logger.info("📊 API endpoints available at /api/*")
-        logger.info("🖥️  Frontend (if built) available at /")
+        logger.info(f"🌐 API will be available on port {os.environ.get('PORT', '5000')}")
+        logger.info("📊 API endpoints:")
+        logger.info("     GET  /                 - Health check")
+        logger.info("     GET  /api/info         - API information")
+        logger.info("     POST /api/auth/signup  - User registration")
+        logger.info("     POST /api/auth/login   - User login")
+        logger.info("     POST /api/predict      - Stroke prediction")
+        logger.info("     GET  /api/history      - Prediction history")
         logger.info("=" * 60)
 
         # Execute the Flask app
@@ -95,7 +95,7 @@ def start_flask_app():
 
 def main():
     """Main startup function"""
-    logger.info("🧠 Brain Stroke Prediction App - Railway Startup")
+    logger.info("🧠 Brain Stroke Prediction API - Railway Backend")
     logger.info("=" * 60)
 
     try:

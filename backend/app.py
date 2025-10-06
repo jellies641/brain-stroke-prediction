@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 def create_app(config_name=None):
     """Application factory pattern"""
-    app = Flask(__name__, static_folder='static', static_url_path='')
+    app = Flask(__name__)
 
     # Load configuration
     if config_name is None:
@@ -112,7 +112,7 @@ def register_error_handlers(app):
 def register_routes(app):
     """Register all application routes"""
 
-    @app.route('/api/health', methods=['GET'])
+    @app.route('/', methods=['GET'])
     def health_check():
         """Health check endpoint"""
         return jsonify({
@@ -124,23 +124,6 @@ def register_routes(app):
             'ml_service': 'available' if ML_SERVICE_AVAILABLE else 'unavailable',
             'environment': os.environ.get('FLASK_ENV', 'development')
         })
-
-    @app.route('/', defaults={'path': ''})
-    @app.route('/<path:path>')
-    def serve_react_app(path):
-        """Serve React frontend"""
-        if path.startswith('api/'):
-            # This is an API route that doesn't exist, let Flask handle it normally
-            from flask import abort
-            abort(404)
-
-        # Check if the requested file exists in static folder
-        static_path = os.path.join(app.static_folder, path)
-        if os.path.isfile(static_path):
-            return send_from_directory(app.static_folder, path)
-        else:
-            # For all other routes, serve index.html (React Router will handle it)
-            return send_from_directory(app.static_folder, 'index.html')
 
     @app.route('/api/info', methods=['GET'])
     def api_info():
@@ -543,11 +526,10 @@ def register_routes(app):
 app = create_app()
 
 if __name__ == '__main__':
-    print("🧠 Starting Brain Stroke Risk Prediction Full-Stack App...")
+    print("🧠 Starting Brain Stroke Risk Prediction API...")
     print("=" * 60)
-    print("React Frontend: http://localhost:5000/")
     print("API Endpoints:")
-    print("  GET    /api/health       - Health check")
+    print("  GET    /                 - Health check")
     print("  GET    /api/info         - API information")
     print("  POST   /api/auth/signup  - User registration")
     print("  POST   /api/auth/login   - User login")
@@ -558,8 +540,8 @@ if __name__ == '__main__':
     print("  DELETE /api/predictions/<id> - Delete specific prediction")
     print("=" * 60)
     print(f"Database: {'✅ PostgreSQL' if 'postgresql' in app.config['SQLALCHEMY_DATABASE_URI'] else '⚠️ SQLite'}")
-    print(f"ML Service: {'✅ Available' if ML_SERVICE_AVAILABLE else '❌ Not Available'}")
-    print(f"Environment: {os.environ.get('FLASK_ENV', 'development')}")
+    print(f"ML Service: {'✅ Available' if ML_SERVICE_AVAILABLE else '❌ Available'}")
+    print(f"Environment: {app.config.get('FLASK_ENV', 'development')}")
     print("=" * 60)
 
     # Run the Flask app
@@ -567,5 +549,5 @@ if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
         port=port,
-        debug=False
+        debug=app.config.get('DEBUG', False)
     )
