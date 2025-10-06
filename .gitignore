@@ -140,7 +140,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public (commented out to allow frontend/public source files)
 
 # Storybook build outputs
 .out
@@ -180,6 +180,10 @@ frontend/.env.local
 frontend/.env.development.local
 frontend/.env.test.local
 frontend/.env.production.local
+
+# Allow frontend/public source files but ignore other public dirs
+/public
+**/build/public
 
 # ML specific
 *.joblib.backup
