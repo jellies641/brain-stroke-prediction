@@ -5,17 +5,19 @@
   "private": true,
   "engines": {
     "node": "18.x",
-    "npm": "9.x"
+    "npm": "9.x",
+    "python": "3.10.x"
   },
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && cd .. && mkdir -p backend/static && cp -r frontend/build/* backend/static/",
+    "build": "pip install -r requirements.txt && cd frontend && npm install && npm run build && cd .. && mkdir -p backend/static && cp -r frontend/build/* backend/static/",
     "start": "python start.py",
     "dev": "cd backend && python app.py",
     "install-frontend": "cd frontend && npm install",
     "build-frontend": "cd frontend && npm run build",
     "setup-static": "mkdir -p backend/static && cp -r frontend/build/* backend/static/",
     "clean": "rm -rf frontend/node_modules frontend/build backend/static",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "railway-build": "npm run build"
   },
   "repository": {
     "type": "git",
