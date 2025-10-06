@@ -1,11 +1,25 @@
-[phases.setup]
-nixPkgs = ["python310", "pip"]
-
-[phases.install]
-cmds = ["pip install -r backend/requirements.txt"]
-
-[phases.start]
-cmd = "cd backend && python app.py"
+[providers]
+python = "3.10"
 
 [variables]
 NIXPACKS_PYTHON_VERSION = "3.10"
+PYTHONPATH = "/app/backend:/app/ml-model"
+FLASK_ENV = "production"
+FORCE_SQLITE = "true"
+
+[phases.setup]
+nixPkgs = ["python310", "pip", "nodejs_18", "npm"]
+
+[phases.build]
+cmds = [
+    "pip install -r requirements.txt",
+    "cd frontend && npm ci --production",
+    "cd frontend && npm run build",
+    "mkdir -p backend/static",
+    "cp -r frontend/build/* backend/static/",
+    "rm -rf frontend/node_modules",
+    "rm -rf frontend/build"
+]
+
+[start]
+cmd = "python start.py"

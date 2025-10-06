@@ -1,12 +1,35 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "nixpacks",
+    "buildCommand": "pip install -r requirements.txt && cd frontend && npm ci && npm run build && mkdir -p backend/static && cp -r frontend/build/* backend/static/"
+  },
+  "deploy": {
+    "startCommand": "cd backend && python app.py",
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "on_failure",
+    "restartPolicyMaxRetries": 3
+  },
   "environments": {
     "production": {
       "variables": {
         "FLASK_ENV": "production",
         "PYTHONPATH": "/app/backend:/app/ml-model",
         "FORCE_SQLITE": "true",
-        "SECRET_KEY": "railway-production-secret-key-change-me"
+        "SECRET_KEY": "railway-production-secret-key-change-me",
+        "NODE_ENV": "production",
+        "GENERATE_SOURCEMAP": "false"
+      }
+    },
+    "staging": {
+      "variables": {
+        "FLASK_ENV": "staging",
+        "PYTHONPATH": "/app/backend:/app/ml-model",
+        "FORCE_SQLITE": "true",
+        "SECRET_KEY": "railway-staging-secret-key-change-me",
+        "NODE_ENV": "production",
+        "GENERATE_SOURCEMAP": "false"
       }
     }
   }
