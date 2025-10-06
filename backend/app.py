@@ -48,7 +48,11 @@ def create_app(config_name=None):
 
     # Initialize extensions
     db.init_app(app)
-    CORS(app, origins=app.config.get('CORS_ORIGINS', '*'))
+    CORS(app,
+         origins=['https://web-production-4ea93.up.railway.app', 'http://localhost:3000'],
+         methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+         allow_headers=['Content-Type', 'Authorization', 'Accept'],
+         supports_credentials=False)
 
     # Initialize database migration
     migrate = Migrate(app, db)

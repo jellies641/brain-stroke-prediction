@@ -29,8 +29,11 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
-    # CORS Configuration - Allow all origins for API backend
-    CORS_ORIGINS = '*'
+    # CORS Configuration - Explicit frontend origins
+    CORS_ORIGINS = ['https://web-production-4ea93.up.railway.app', 'http://localhost:3000']
+    CORS_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+    CORS_HEADERS = ['Content-Type', 'Authorization', 'Accept']
+    CORS_SUPPORTS_CREDENTIALS = False
 
     # ML Model Configuration
     MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'ml-model', 'models')
