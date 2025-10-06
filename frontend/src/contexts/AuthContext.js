@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
-import axios from "axios";
+import api from "../services/api";
 import { toast } from "react-toastify";
 
 // Initial state
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       // Validate token on app load
       validateToken(token);
     }
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }) => {
   // Set axios interceptors
   useEffect(() => {
     // Request interceptor
-    const requestInterceptor = axios.interceptors.request.use(
+    const requestInterceptor = api.interceptors.request.use(
       (config) => {
         if (state.token) {
           config.headers.Authorization = `Bearer ${state.token}`;
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
     );
 
     // Response interceptor
-    const responseInterceptor = axios.interceptors.response.use(
+    const responseInterceptor = api.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
@@ -112,8 +112,8 @@ export const AuthProvider = ({ children }) => {
     );
 
     return () => {
-      axios.interceptors.request.eject(requestInterceptor);
-      axios.interceptors.response.eject(responseInterceptor);
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
     };
   }, [state.token]);
 
@@ -123,7 +123,7 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: actionTypes.SET_LOADING, payload: true });
 
       // Try API token validation
-      const response = await axios.get("/api/auth/validate", {
+      const response = await api.get("/api/auth/validate", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -152,7 +152,7 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: actionTypes.AUTH_START });
 
       // Try API login
-      const response = await axios.post("/api/auth/login", {
+      const response = await api.post("/api/auth/login", {
         email,
         password,
       });
@@ -164,7 +164,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(user));
 
       // Set axios default header
-      axios.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
 
       dispatch({
         type: actionTypes.AUTH_SUCCESS,
@@ -192,7 +192,7 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: actionTypes.AUTH_START });
 
       // Try API signup
-      const response = await axios.post("/api/auth/signup", userData);
+      const response = await api.post("/api/auth/signup", userData);
 
       const { user } = response.data;
 
@@ -216,7 +216,7 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: actionTypes.AUTH_START });
 
-      const response = await axios.post("/api/auth/google", {
+      const response = await api.post("/api/auth/google", {
         tokenId,
       });
 
@@ -227,7 +227,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("user", JSON.stringify(user));
 
       // Set axios default header
-      axios.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
 
       dispatch({
         type: actionTypes.AUTH_SUCCESS,
@@ -256,7 +256,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
 
     // Remove axios default header
-    delete axios.defaults.headers.common["Authorization"];
+    delete api.defaults.headers.common["Authorization"];
 
     dispatch({ type: actionTypes.LOGOUT });
     toast.info("You have been logged out.");
@@ -267,7 +267,7 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: actionTypes.SET_LOADING, payload: true });
 
-      const response = await axios.put("/api/auth/profile", updateData);
+      const response = await api.put("/api/auth/profile", updateData);
 
       const updatedUser = response.data.user;
 
@@ -295,7 +295,7 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: actionTypes.SET_LOADING, payload: true });
 
-      await axios.post("/api/auth/change-password", {
+      await api.post("/api/auth/change-password", {
         currentPassword,
         newPassword,
       });
@@ -316,7 +316,7 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: actionTypes.SET_LOADING, payload: true });
 
-      await axios.post("/api/auth/forgot-password", { email });
+      await api.post("/api/auth/forgot-password", { email });
 
       toast.success("Password reset email sent!");
       return { success: true };

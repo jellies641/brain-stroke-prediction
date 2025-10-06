@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useReducer } from "react";
-import axios from "axios";
+import React, { createContext, useContext, useReducer, useEffect } from "react";
+import api from "../services/api";
 import { toast } from "react-toastify";
 
 // Initial state
@@ -87,7 +87,7 @@ export const PredictionProvider = ({ children }) => {
     try {
       dispatch({ type: actionTypes.SET_LOADING, payload: true });
 
-      const response = await axios.post("/api/predict", patientData);
+      const response = await api.post("/api/predict", patientData);
 
       const prediction = {
         id: Date.now(), // Simple ID generation for demo
@@ -120,7 +120,7 @@ export const PredictionProvider = ({ children }) => {
     try {
       dispatch({ type: actionTypes.SET_LOADING, payload: true });
 
-      const response = await axios.get("/api/history");
+      const response = await api.get("/api/history");
 
       dispatch({
         type: actionTypes.SET_PREDICTIONS,
@@ -148,7 +148,7 @@ export const PredictionProvider = ({ children }) => {
   // Get prediction statistics
   const getStatistics = async () => {
     try {
-      const response = await axios.get("/api/statistics");
+      const response = await api.get("/api/statistics");
 
       dispatch({
         type: actionTypes.SET_STATISTICS,
@@ -174,7 +174,7 @@ export const PredictionProvider = ({ children }) => {
   // Delete a prediction
   const deletePrediction = async (predictionId) => {
     try {
-      await axios.delete(`/api/predictions/${predictionId}`);
+      await api.delete(`/api/predictions/${predictionId}`);
 
       dispatch({
         type: actionTypes.DELETE_PREDICTION,
