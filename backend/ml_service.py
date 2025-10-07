@@ -31,11 +31,33 @@ class StrokeRiskPredictor:
         self.model_version = "1.0.0"
         self.model_metrics = {}
 
-        # Set default model path
+        # Set default model path with Railway-friendly fallbacks
         if model_path is None:
-            # Look for model in ml-model directory
             current_dir = Path(__file__).parent
-            model_path = current_dir.parent / "ml-model" / "models" / "stroke_prediction_model.pkl"
+
+            # Try multiple possible model locations
+            possible_paths = [
+                # First try: backend/models (Railway deployment friendly)
+                current_dir / "models" / "stroke_prediction_model.pkl",
+                # Second try: ml-model directory (local development)
+                current_dir.parent / "ml-model" / "models" / "stroke_prediction_model.pkl",
+                # Third try: absolute path for Railway
+                Path("/app/ml-model/models/stroke_prediction_model.pkl"),
+                # Fourth try: relative to working directory
+                Path("ml-model/models/stroke_prediction_model.pkl"),
+            ]
+
+            model_path = None
+            for path in possible_paths:
+                if path.exists():
+                    model_path = path
+                    logger.info(f"Found model at: {path}")
+                    break
+
+            if model_path is None:
+                logger.warning("No model file found in any expected location")
+                # Will trigger fallback model creation
+                model_path = possible_paths[0]  # Use first path as default
 
         self.model_path = Path(model_path)
         self._load_model()
