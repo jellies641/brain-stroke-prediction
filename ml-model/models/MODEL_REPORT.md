@@ -64,4 +64,4 @@ probability = model.predict_proba(scaled_features)[:, 1]
 - Model performance may vary on different populations
 - Regular retraining recommended with new data
 
-Generated on: 2025-10-03 19:22:49
+Generated on: 2025-10-07 17:00:14
